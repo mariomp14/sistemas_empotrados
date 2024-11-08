@@ -1,0 +1,55 @@
+Implementa también la función ACME_readInt, que permita leer el valor del registro de interrupciones del
+dispositivo ACME 3416. Para probar esto:
+
+1. acme dir 00. Determina la direccion de cada pin GPIO a 0 (como entrada)
+2.acme itype ffff,permite escribir un valor de 16 bits en los registros INT_TYPE_A e
+INT_TYPE_B del ACME3416. En este caso ponemos todos los pines gpio activos a ambos blancos.
+3. Poner VCC-GND o viceversa en cualquiera de los puertos PB. 
+4.acme istat (para leer registro de interrupciones).
+Ejemplo: para pb4, me devuleve->10= 0001 0000 (interrupcion en pb4)
+         para pb7, me devuelve->90= 01001 0000(interuupcion en pb7)
+__________________________________________________________________________________
+Los pines de salida GPIO4 a GPIO7 se puedan controlar (encender o apagar) desde el interfaz de
+usuario mediante los controles adecuados (por ejemplo, checkboxes).
+
+Conectar led, pata corta a tierra y pata larga al GPIO.
+
+___________________________________________________
+
+-Entender bien por lo que hay que poner vTaskDelay()
+-Donde se inicializa pA5 o viene por defecto en el acme
+
+-Para probar:
+Los pines GPIO0 a GPIO3 del ACME3416 emulado se configurarán como entradas y se activarán sus
+interrupciones. El estado de los pines de entrada se podrá monitorizar desde el interfaz Qt
+mediante indicadores de tipo LED de la biblioteca analogwidgets.
+Conecto pa5(salida de interrupcion) a pa3.
+Para generar la interrupcion que sale por pa5, lagunos de los gpio0,1,2 o 3 del acme(emulados) tienen que cambiar de estado
+Para ello pongo a tierra el pin que quiero que tenga un nivel bajo ya que las demás entradas al estar al aire detectan un 1?
+
+________________________________
+-Para probar las funciones del BMI:
+void BMI160_setFullScaleGyroRange-> En BMI160.c se encuentra BMI160_initialize que es la funcion que inicializa el BMI ahi le voy dando los valores directamente de rango de giro y aceleracion
+void BMI160_setFullScaleAccelRange->En BMI160.c se encuentra BMI160_initialize que es la funcion que inicializa el BMI ahi le voy dando los valores directamente de rango de giro y aceleracion
+void BMI160_getAcceleration-> comando readacc
+
+TIPS para depurar
+MIRAR EN ipad y transcirbir aqui:
+
+
+________________________________________________________________________________________
+	
+Hola a todos
+
+Algunos me habéis consultado la duda de que el acelerómetro da unas "medidas muy grandes" y no sabéis en qué unidades las da. 
+
+El acelerómetro no da la gravedad en Gs, igual que el ADC no da la tensión en voltios. 
+
+Si  recordáis, en el caso del ADC del microcontrolador TIVA, da la medida como un entero de 12 bits sin signo y con un rango que representa las tensiones entre los valores de referencia 0 y 3.3v, lo que significa que si la lectura es 0 está representando el mínimo (0v), si es 4095 está representando el máximo (3.3v), y si por ejemplo da 2048 está representando la mitad (3.3/2=1,65v).
+
+En el caso del acelerómetro, la medida es un entero de 16 bits con signo (con valores comprendidos entre -32768 y 32767), y representa la aceleración en el rango configurado. Por ejemplo, si configuras el rango de +-4G, una aceleración de 32767 representa el máximo del rango (4G), -32768 representa el mínimo del rango (-4G), 0 representa 0g, 8192 representa 1g, 16384 representa 2G, -8192 representa -1G, y así sucesivamente. 
+
+Para el giróscopo es lo mismo, pero en las unidades correspondientes y según el rango. 
+
+Saludos
+__________________________________________________________________________________________
